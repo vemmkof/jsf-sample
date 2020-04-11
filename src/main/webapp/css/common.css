@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+.full-width {
+	margin: auto;
+	padding: 0.25rem;
+	text-align: center;
+	width: 99%;
+}
+
+body {
+	/* 	background-color: #1169A3; */
+	background-color: #0b4e7a;
+}
