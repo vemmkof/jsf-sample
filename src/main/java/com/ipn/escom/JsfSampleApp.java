@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
-@RequestScoped
 @ManagedBean(name = "jsfSampleApp", eager = true)
+@RequestScoped
 public class JsfSampleApp {
 
   private static final Logger LOGGER = Logger.getLogger(JsfSampleApp.class.getName());
@@ -23,7 +23,8 @@ public class JsfSampleApp {
     builder.append(" - ");
     builder.append(LocalDateTime.now().getHour());
     builder.append(":");
-    builder.append(LocalDateTime.now().getMinute());
+    int minute = LocalDateTime.now().getMinute();
+    builder.append(minute < 10 ? "0" + minute : minute);
     return builder.toString();
   }
 

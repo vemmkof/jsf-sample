@@ -14,25 +14,37 @@
 <h:body>
 	<div class="ui-fluid">
 		<h:form>
-			<p:panelGrid columns="2" layout="grid"
-				styleClass="ui-panelgrid-blank"
-				columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-10">
-				<f:facet name="header">#{jsfSampleApp.message}</f:facet>
-				<h:outputLabel for="username" value="Username:" />
-				<p:inputText id="username" required="true" />
+			<p:panelGrid styleClass="centered" columns="3"
+				columnClasses="ui-md-2, ui-md-7, ui-md-3" layout="grid"
+				id="form-login">
 
-				<h:outputLabel for="password" value="Password:" />
-				<p:password id="password" required="true" />
+				<f:facet name="header" class="title">#{jsfSampleApp.message}</f:facet>
+
+				<p:column>
+					<em class="pi pi-user" />
+					<p:outputLabel for="username" value="Username:" />
+				</p:column>
+				<p:inputText id="username" value="#{login.username}" required="true"
+					requiredMessage="The username is required" />
+				<p:message for="username" display="tooltip" />
+
+				<p:column>
+					<em class="pi pi-key" />
+					<p:outputLabel for="password" value="Password:" />
+				</p:column>
+				<p:password id="password" required="true" value="#{login.password}"
+					requiredMessage="The password is required" />
+				<p:message for="password" display="tooltip" />
 
 				<f:facet name="footer">
-					<p:commandButton value="Login" type="button"
-						iconPos="pi pi-arrow-right" icon="pi pi-arrow-right" />
+					<p:commandButton id="loginButton" value="Login"
+						iconPos="pi pi-arrow-right" icon="pi pi-arrow-right"
+						action="#{login.signIn}" update="form-login" />
 				</f:facet>
 			</p:panelGrid>
 		</h:form>
+
 	</div>
-
-
 </h:body>
 <!-- icons: https://primefaces.org/showcase/ui/misc/primeicons.xhtml -->
 <!-- themes: https://www.primefaces.org/themes/ -->

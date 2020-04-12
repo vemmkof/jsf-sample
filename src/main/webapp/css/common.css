@@ -7,7 +7,16 @@
 	width: 99%;
 }
 
+.ui-panelgrid-header {
+	font-size: 2rem;
+	background-color: #1F7ED0;
+	color: #FFFFFF;
+	margin-bottom: 0.2rem;
+	border-radius: 5px;
+}
+
 body {
 	/* 	background-color: #1169A3; */
-	background-color: #0b4e7a;
+	/* 	background-color: #0b4e7a; */
+	
 }
