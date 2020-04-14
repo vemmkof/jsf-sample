@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head>
+	<title>Welcome</title>
+	<h:outputStylesheet library="css" name="common.css" />
+	<h:outputStylesheet name="primeicons/primeicons.css"
+		library="primefaces" />
+</h:head>
+<h:body>
+	<div class="ui-fluid centered">
+		<!-- FOR REQUEST SCOPE ${requestScope.paramName} -->
+		<!-- FOR REQUEST PARAM => #{param['id']} -->
+		<!-- FOR SESSION SCOPE => ${sessionScope.paramName} -->
+		<h:form>
+			<p:dataTable var="u" value="#{userView.users}" id="usersTable">
+				<p:column headerText="ID" colspan="1">
+					<h:outputText value="#{u.idUser}" />
+				</p:column>
+
+				<p:column headerText="Username" colspan="2" styleClass="centered">
+					<h:outputText value="#{u.username}" />
+				</p:column>
+
+				<p:column headerText="Created" colspan="3">
+					<h:outputText value="#{u.createdAt}" />
+				</p:column>
+
+				<p:column headerText="Updated" colspan="3">
+					<h:outputText value="#{u.updatedAt}" />
+				</p:column>
+
+				<p:column headerText="Delete" colspan="1">
+					<p:commandButton action="#{userView.deleteUser(u.idUser)}"
+						id="deleteUser" icon="pi pi-trash" title="Delete user"
+						update="usersTable">
+						<p:confirm header="Confirmation" message="Are you sure?"
+							icon="pi pi-exclamation-triangle" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check"
+							update="@form" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+					</p:confirmDialog>
+				</p:column>
+				<p:column headerText="Update" colspan="1">
+					<p:commandButton action="#{userView.findUserById(u.idUser)}"
+						id="updateUser" style="margin-right:20px;" icon="pi pi-refresh"
+						title="Update user" />
+				</p:column>
+			</p:dataTable>
+			<c:choose>
+				<c:when test="#{userView.currentUser != null}">
+					<p:commandButton id="cancelButton" value="Cancel"
+						styleClass="GreenButton" iconPos="pi pi-times" icon="pi pi-times"
+						action="#{userView.cancelUpdate}" update="form-update"
+						immediate="true" />
+					<p:panelGrid layout="grid" columns="2" id="form-update"
+						columnClasses="ui-md-3, ui-md-8">
+						<f:facet name="header">Update user[#{userView.currentUser.idUser}]</f:facet>
+						<p:outputLabel value="Username for new user" />
+						<p:inputText id="username"
+							value="#{userView.currentUser.username}" required="true"
+							requiredMessage="The username is required" />
+						<p:outputLabel value="Password for new user" />
+						<p:password id="password" required="true"
+							value="#{userView.currentUser.password}"
+							requiredMessage="The password is required" feedback="true" />
+						<f:facet name="footer" class="title">
+							<p:commandButton id="updateButton" value="Update"
+								styleClass="GreenButton" iconPos="pi pi-pencil"
+								icon="pi pi-pencil" action="#{userView.updateUser}"
+								update="usersTable" />
+						</f:facet>
+					</p:panelGrid>
+				</c:when>
+			</c:choose>
+			<p:messages id="readMessage" showDetail="true" closable="true">
+				<p:autoUpdate />
+			</p:messages>
+		</h:form>
+
+		<ui:include src="menu.xhtml" />
+	</div>
+</h:body>
+</html>

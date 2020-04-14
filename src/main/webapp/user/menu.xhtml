@@ -4,22 +4,19 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-	<h:form>		
+	<h:form>
 		<c:choose>
 			<c:when test="${fn:contains(request.requestURI, 'user')}">
 				<p:dock position="bottom">
+					<p:menuitem value="HOME"
+						icon="https://img.icons8.com/nolan/128/home-page.png"
+						url="welcome.xhtml" />
 					<p:menuitem value="CREATE"
 						icon="https://img.icons8.com/nolan/128/create-new.png"
 						url="create.xhtml" />
 					<p:menuitem value="READ"
 						icon="https://img.icons8.com/nolan/128/find-user-male.png"
 						url="read.xhtml" />
-					<p:menuitem value="UPDATE"
-						icon="https://img.icons8.com/nolan/128/approve-and-update.png"
-						url="update.xhtml" />
-					<p:menuitem value="DELETE"
-						icon="https://img.icons8.com/nolan/128/delete-forever.png"
-						url="delete.xhtml" />
 					<p:menuitem value="LOGOUT"
 						icon="https://img.icons8.com/nolan/128/exit.png"
 						action="#{login.signOut}" />
@@ -27,18 +24,15 @@
 			</c:when>
 			<c:otherwise>
 				<p:dock position="bottom">
+					<p:menuitem value="HOME"
+						icon="https://img.icons8.com/nolan/128/home-page.png"
+						url="user/create.xhtml" />
 					<p:menuitem value="CREATE"
 						icon="https://img.icons8.com/nolan/128/create-new.png"
 						url="user/create.xhtml" />
 					<p:menuitem value="READ"
 						icon="https://img.icons8.com/nolan/128/find-user-male.png"
 						url="user/read.xhtml" />
-					<p:menuitem value="UPDATE"
-						icon="https://img.icons8.com/nolan/128/approve-and-update.png"
-						url="user/update.xhtml" />
-					<p:menuitem value="DELETE"
-						icon="https://img.icons8.com/nolan/128/delete-forever.png"
-						url="user/delete.xhtml" />
 					<p:menuitem value="LOGOUT"
 						icon="https://img.icons8.com/nolan/128/exit.png"
 						action="#{login.signOut}" />

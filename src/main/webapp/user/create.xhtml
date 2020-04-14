@@ -21,15 +21,15 @@
 				columnClasses="ui-md-3, ui-md-8">
 				<f:facet name="header">Create user</f:facet>
 				<p:outputLabel value="Username for new user" />
-				<p:inputText id="username" value="#{userController.username}" required="true"
+				<p:inputText id="username" value="#{userView.username}" required="true"
 					requiredMessage="The username is required" />
 				<p:outputLabel value="Password for new user" />
-				<p:password id="password" required="true" value="#{userController.password}"
+				<p:password id="password" required="true" value="#{userView.password}"
 					requiredMessage="The password is required" feedback="true" />
 				<f:facet name="footer" class="title">
 					<p:commandButton id="createButton" value="Create"
 						styleClass="GreenButton" iconPos="pi pi-pencil"
-						icon="pi pi-pencil" action="#{userController.createUser}"
+						icon="pi pi-pencil" action="#{userView.createUser}"
 						update="form-create" />
 				</f:facet>
 			</p:panelGrid>

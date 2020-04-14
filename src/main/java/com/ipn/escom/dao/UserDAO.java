@@ -18,6 +18,8 @@ public interface UserDAO {
 
   List<UserEntity> findUserByUsername(UserEntity user);
 
+  List<UserEntity> findUserById(UserEntity user);
+
   boolean deleteUser(UserEntity user);
 
 }

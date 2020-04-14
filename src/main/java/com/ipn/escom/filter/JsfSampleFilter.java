@@ -32,8 +32,6 @@ public class JsfSampleFilter implements Filter {
     final String welcomeURL =
         String.format("%s/user/welcome.xhtml", servletRequest.getContextPath());
     final String requestURI = servletRequest.getRequestURI();
-    final String log = String.format("URL requested <%s>", requestURI);
-    LOGGER.log(Level.INFO, log);
     boolean logged = isLogged(session);
     boolean loginRequest = isLoginRequest(requestURI, loginURL, rootURL);
     boolean resourceRequest = isResourceRequest(servletRequest, requestURI);

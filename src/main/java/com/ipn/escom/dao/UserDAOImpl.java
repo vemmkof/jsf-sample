@@ -1,7 +1,6 @@
 package com.ipn.escom.dao;
 
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
@@ -14,7 +13,6 @@ import com.ipn.escom.entity.UserEntity;
 import com.ipn.escom.persistence.PersistenceUtil;
 import com.ipn.escom.security.HashUtil;
 
-@SuppressWarnings("unchecked")
 public class UserDAOImpl implements UserDAO {
 
 
@@ -40,7 +38,8 @@ public class UserDAOImpl implements UserDAO {
       userEntity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
       EntityManager entityManager = PersistenceUtil.getDevEntityManager();
       entityManager.getTransaction().begin();
-      entityManager.merge(userEntity);
+      entityManager
+          .merge(entityManager.contains(userEntity) ? userEntity : entityManager.merge(userEntity));
       entityManager.getTransaction().commit();
       entityManager.close();
     }
@@ -59,10 +58,15 @@ public class UserDAOImpl implements UserDAO {
   @Override
   public List<UserEntity> findAllUsers() {
     EntityManager entityManager = PersistenceUtil.getDevEntityManager();
-    Collection<UserEntity> userEntities =
-        entityManager.createQuery("SELECT u FROM User u").getResultList();
+    Session session = entityManager.unwrap(Session.class);
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<UserEntity> criteriaQuery = criteriaBuilder.createQuery(UserEntity.class);
+    Root<UserEntity> root = criteriaQuery.from(UserEntity.class);
+    criteriaQuery.select(root);
+    Query<UserEntity> query = session.createQuery(criteriaQuery);
+    List<UserEntity> users = query.getResultList();
     entityManager.close();
-    return userEntities.stream().map(u -> {
+    return users.stream().map(u -> {
       u.setPassword(null);
       return u;
     }).collect(Collectors.toList());
@@ -81,7 +85,10 @@ public class UserDAOImpl implements UserDAO {
     Query<UserEntity> query = session.createQuery(criteriaQuery);
     List<UserEntity> users = query.getResultList();
     entityManager.close();
-    return users;
+    return users.stream().map(u -> {
+      u.setPassword(null);
+      return u;
+    }).collect(Collectors.toList());
   }
 
   @Override
@@ -96,7 +103,27 @@ public class UserDAOImpl implements UserDAO {
     Query<UserEntity> query = session.createQuery(criteriaQuery);
     List<UserEntity> users = query.getResultList();
     entityManager.close();
-    return users;
+    return users.stream().map(u -> {
+      u.setPassword(null);
+      return u;
+    }).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<UserEntity> findUserById(UserEntity user) {
+    EntityManager entityManager = PersistenceUtil.getDevEntityManager();
+    Session session = entityManager.unwrap(Session.class);
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<UserEntity> criteriaQuery = criteriaBuilder.createQuery(UserEntity.class);
+    Root<UserEntity> root = criteriaQuery.from(UserEntity.class);
+    criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("idUser"), user.getIdUser()));
+    Query<UserEntity> query = session.createQuery(criteriaQuery);
+    List<UserEntity> users = query.getResultList();
+    entityManager.close();
+    return users.stream().map(u -> {
+      u.setPassword(null);
+      return u;
+    }).collect(Collectors.toList());
   }
 
   @Override
@@ -105,14 +132,12 @@ public class UserDAOImpl implements UserDAO {
     if (userEntity != null) {
       EntityManager entityManager = PersistenceUtil.getDevEntityManager();
       entityManager.getTransaction().begin();
-      entityManager.remove(userEntity);
+      entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
       entityManager.getTransaction().commit();
       entityManager.close();
       return true;
     }
     return false;
   }
-
-
 
 }

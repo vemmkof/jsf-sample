@@ -79,8 +79,8 @@ public class LoginBean {
       session.invalidate();
       ExternalContext externalContext = context.getExternalContext();
       externalContext.invalidateSession();
-      externalContext.redirect(
-          String.format("%s/index?faces-redirect=true", externalContext.getRequestContextPath()));
+      externalContext.redirect(String.format("%s/index.xhtml?faces-redirect=true",
+          externalContext.getRequestContextPath()));
     }
     return "index?faces-redirect=true";
   }
