@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,18 +21,23 @@ public class UserEntity implements Serializable {
   private static final long serialVersionUID = 1146189021488607412L;
 
   @Id
+  @Positive
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer idUser;
 
+  @NotEmpty
   @Column(nullable = false)
   private String username;
 
+  @NotEmpty
   @Column(nullable = false)
   private String password;
 
+  @PastOrPresent
   @CreationTimestamp
   private Timestamp createdAt;
 
+  @PastOrPresent
   @UpdateTimestamp
   private Timestamp updatedAt;
 

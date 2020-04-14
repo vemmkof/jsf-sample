@@ -14,7 +14,9 @@ public interface UserDAO {
 
   List<UserEntity> findAllUsers();
 
-  List<UserEntity> findUserByLogin(UserEntity user);
+  List<UserEntity> findUserByUsernameAndPassword(UserEntity user);
+
+  List<UserEntity> findUserByUsername(UserEntity user);
 
   boolean deleteUser(UserEntity user);
 

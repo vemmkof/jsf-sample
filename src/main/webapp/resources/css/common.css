@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+.full-width {
+	margin: auto;
+	padding: 0.25rem;
+	text-align: center;
+	width: 99%;
+}
+
+.ui-panelgrid-header {
+	font-size: 2rem;
+	background-color: #1F7ED0;
+	color: #FFFFFF;
+	margin-bottom: 0.2rem;
+	border-radius: 5px;
+}
+
+.ui-panelgrid-footer {
+	font-size: 1rem;
+	/* 	background-color: black; */
+	color: white;
+	margin-bottom: 0.2rem;
+	border-radius: 5px;
+	text-align: center !important;
+}
+
+.ui-widget-header {
+	border: none !important;
+}
+
+body {
+	/* 	background-color: #1D4C7A; */
+	background-color: #424548;
+}
+
+.video {
+	background-image: url("#{resource['img/video.png']}") no-repeat
+		!important;
+}

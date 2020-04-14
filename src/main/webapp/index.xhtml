@@ -7,34 +7,33 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title>JSF CRUD App</title>
-	<link rel="stylesheet" type="text/css" href="css/common.css" />
+	<h:outputStylesheet library="css" name="common.css" />
 	<h:outputStylesheet name="primeicons/primeicons.css"
 		library="primefaces" />
 </h:head>
 <h:body>
 	<div class="ui-fluid">
 		<h:form>
-			<p:panelGrid styleClass="centered" columns="3"
-				columnClasses="ui-md-2, ui-md-7, ui-md-3" layout="grid"
-				id="form-login">
-
+			<p:panelGrid styleClass="centered" columns="2"
+				columnClasses="ui-md-3, ui-md-8" layout="grid" id="form-login">
 				<f:facet name="header" class="title">#{jsfSampleApp.message}</f:facet>
-
-				<p:column>
+				<p:row>
 					<em class="pi pi-user" />
 					<p:outputLabel for="username" value="Username:" />
-				</p:column>
-				<p:inputText id="username" value="#{login.username}" required="true"
-					requiredMessage="The username is required" />
-				<p:message for="username" display="tooltip" />
+				</p:row>
+				<p:row>
+					<p:inputText id="username" value="#{login.username}"
+						required="true" requiredMessage="The username is required" />
+				</p:row>
 
-				<p:column>
+				<p:row>
 					<em class="pi pi-key" />
 					<p:outputLabel for="password" value="Password:" />
-				</p:column>
-				<p:password id="password" required="true" value="#{login.password}"
-					requiredMessage="The password is required" />
-				<p:message for="password" display="tooltip" />
+				</p:row>
+				<p:row>
+					<p:password id="password" required="true" value="#{login.password}"
+						requiredMessage="The password is required" />
+				</p:row>
 
 				<f:facet name="footer">
 					<p:commandButton id="loginButton" value="Login"
@@ -42,10 +41,16 @@
 						action="#{login.signIn}" update="form-login" />
 				</f:facet>
 			</p:panelGrid>
+			<p:row>
+				<p:messages id="loginMessage" showDetail="true" closable="true">
+					<p:autoUpdate />
+				</p:messages>
+			</p:row>
 		</h:form>
-
 	</div>
 </h:body>
+<!-- icons: https://primefaces.org/showcase/ui/misc/primeicons.xhtml -->
+<!-- themes: https://www.primefaces.org/themes/ -->
 <!-- icons: https://primefaces.org/showcase/ui/misc/primeicons.xhtml -->
 <!-- themes: https://www.primefaces.org/themes/ -->
 </html>

@@ -7,13 +7,24 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title>Welcome</title>
-	<link rel="stylesheet" type="text/css" href="../css/common.css" />
+	<h:outputStylesheet library="css" name="common.css" />
 	<h:outputStylesheet name="primeicons/primeicons.css"
 		library="primefaces" />
 </h:head>
 <h:body>
-	<div class="ui-fluid">Welcome!</div>
+	<div class="ui-fluid centered">
+		<!-- FOR REQUEST SCOPE ${requestScope.paramName} -->
+		<!-- FOR REQUEST PARAM => #{param['id']} -->
+		<!-- FOR SESSION SCOPE => ${sessionScope.paramName} -->
+		<p:panelGrid layout="grid" columns="1">
+			<f:facet name="header">Welcome ${sessionScope.user.username}!</f:facet>
+			<p:outputLabel value="ID: ${sessionScope.user.idUser}" />
+			<p:outputLabel value="Username: ${sessionScope.user.username}" />
+			<p:outputLabel value="Created at: ${sessionScope.user.createdAt}" />
+			<p:outputLabel value="Updated at: ${sessionScope.user.updatedAt}" />
+			<f:facet name="footer" class="title">Choose any action from dock to continue</f:facet>
+		</p:panelGrid>
+		<ui:include src="menu.xhtml" />
+	</div>
 </h:body>
-<!-- icons: https://primefaces.org/showcase/ui/misc/primeicons.xhtml -->
-<!-- themes: https://www.primefaces.org/themes/ -->
 </html>

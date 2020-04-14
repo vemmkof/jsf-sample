@@ -23,6 +23,7 @@ public class UserDAOImpl implements UserDAO {
     EntityManager entityManager = PersistenceUtil.getDevEntityManager();
     entityManager.getTransaction().begin();
     user.setPassword(HashUtil.getHash(user.getPassword()));
+    user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
     entityManager.persist(user);
     entityManager.getTransaction().commit();
     entityManager.close();
@@ -68,7 +69,7 @@ public class UserDAOImpl implements UserDAO {
   }
 
   @Override
-  public List<UserEntity> findUserByLogin(UserEntity user) {
+  public List<UserEntity> findUserByUsernameAndPassword(UserEntity user) {
     EntityManager entityManager = PersistenceUtil.getDevEntityManager();
     Session session = entityManager.unwrap(Session.class);
     CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
@@ -77,6 +78,21 @@ public class UserDAOImpl implements UserDAO {
     criteriaQuery.select(root).where(
         criteriaBuilder.equal(root.get("username"), user.getUsername()),
         criteriaBuilder.equal(root.get("password"), HashUtil.getHash(user.getPassword())));
+    Query<UserEntity> query = session.createQuery(criteriaQuery);
+    List<UserEntity> users = query.getResultList();
+    entityManager.close();
+    return users;
+  }
+
+  @Override
+  public List<UserEntity> findUserByUsername(UserEntity user) {
+    EntityManager entityManager = PersistenceUtil.getDevEntityManager();
+    Session session = entityManager.unwrap(Session.class);
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<UserEntity> criteriaQuery = criteriaBuilder.createQuery(UserEntity.class);
+    Root<UserEntity> root = criteriaQuery.from(UserEntity.class);
+    criteriaQuery.select(root)
+        .where(criteriaBuilder.equal(root.get("username"), user.getUsername()));
     Query<UserEntity> query = session.createQuery(criteriaQuery);
     List<UserEntity> users = query.getResultList();
     entityManager.close();
@@ -96,6 +112,7 @@ public class UserDAOImpl implements UserDAO {
     }
     return false;
   }
+
 
 
 }
