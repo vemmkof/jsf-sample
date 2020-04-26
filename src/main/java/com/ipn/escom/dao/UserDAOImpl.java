@@ -102,10 +102,7 @@ public class UserDAOImpl implements UserDAO {
 		Query<UserEntity> query = session.createQuery(criteriaQuery);
 		List<UserEntity> users = query.getResultList();
 		entityManager.close();
-		return users.stream().map(u -> {
-			u.setPassword(null);
-			return u;
-		}).collect(Collectors.toList());
+		return users.stream().collect(Collectors.toList());
 	}
 
 	@Override

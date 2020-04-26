@@ -1,37 +1,22 @@
 package com.ipn.escom.security;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.security.SecureRandom;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 public class HashUtil {
 
-	private static final Logger LOGGER = Logger.getLogger(HashUtil.class.getName());
+	private static final String SECRET_KEY = "S3CR3TK3Y";
 
 	private HashUtil() {
 	}
 
 	public static String getHash(String password) {
-		try {
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-			final byte[] encodedhash = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
-			return bytesToHex(encodedhash);
-		} catch (NoSuchAlgorithmException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
-		}
-		return null;
+		return BCrypt.hashpw(password, BCrypt.gensalt(10, new SecureRandom(SECRET_KEY.getBytes())));
 	}
 
-	private static String bytesToHex(byte[] hash) {
-		StringBuilder hexString = new StringBuilder();
-		for (int i = 0; i < hash.length; i++) {
-			String hex = Integer.toHexString(0xFF & hash[i]);
-			if (hex.length() == 1)
-				hexString.append('0');
-			hexString.append(hex);
-		}
-		return hexString.toString();
+	public static boolean match(String password, String securedPassword) {
+		return BCrypt.checkpw(password, securedPassword);
 	}
+
 }

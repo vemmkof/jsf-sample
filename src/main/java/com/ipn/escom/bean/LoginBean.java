@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import com.ipn.escom.dao.UserDAO;
 import com.ipn.escom.dao.UserDAOImpl;
 import com.ipn.escom.entity.UserEntity;
+import com.ipn.escom.security.HashUtil;
 
 @ManagedBean(name = "login", eager = false)
 @SessionScoped
@@ -50,21 +51,24 @@ public class LoginBean {
 		final UserDAO userDAO = new UserDAOImpl();
 		UserEntity userEntity = new UserEntity();
 		userEntity.setUsername(username);
-		userEntity.setPassword(password);
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
-		List<UserEntity> userEntities = userDAO.findUserByUsernameAndPassword(userEntity);
+		List<UserEntity> userEntities = userDAO.findUserByUsername(userEntity);
 		if (userEntities == null || userEntities.isEmpty()) {
 			LOGGER.log(Level.INFO, "NO USERS");
-			context.addMessage("loginMessage",
-					new FacesMessage(FacesMessage.SEVERITY_WARN, "Login failed", "Invalid or unknown credentials"));
-			return "index?faces-redirect=true";
 		} else {
-			LOGGER.log(Level.INFO, "CREATING SESSION");
-			HttpSession session = (HttpSession) context.getExternalContext().getSession(true);
-			session.setAttribute("user", userEntities.get(0));
-			return "user/welcome";
+			userEntity = userEntities.get(0);
+			LOGGER.log(Level.INFO, "USER WAS FOUND");
+			if (HashUtil.match(password, userEntity.getPassword())) {
+				LOGGER.log(Level.INFO, "CREATING SESSION");
+				HttpSession session = (HttpSession) context.getExternalContext().getSession(true);
+				session.setAttribute("user", userEntity);
+				return "user/welcome";
+			}
 		}
+		context.addMessage("loginMessage",
+				new FacesMessage(FacesMessage.SEVERITY_WARN, "Login failed", "Invalid or unknown credentials"));
+		return "index?faces-redirect=true";
 	}
 
 	public String signOut() throws IOException {

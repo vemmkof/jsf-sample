@@ -7,7 +7,6 @@
 	<display-name>jsf-sample</display-name>
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
-		<!-- <param-value>luna-blue</param-value> -->
 		<param-value>home</param-value>
 	</context-param>
 	<welcome-file-list>

@@ -19,6 +19,8 @@ import com.ipn.escom.entity.UserEntity;
 public class UserBean {
 
 	private static final Logger LOGGER = Logger.getLogger(UserBean.class.getName());
+	private static final String REDIRECT = "read?faces-redirect=true";
+	private static final String READ_FACE_MESSAGE = "readMessage";
 	private List<UserEntity> users; // findAll
 	private UserEntity currentUser; // update
 	private String username;
@@ -69,12 +71,11 @@ public class UserBean {
 
 	public void deleteUser(Integer idUser) {
 
-		final String faceMessage = "readMessage";
 		final String deleteError = "Error on delete";
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
 		if (idUser == null) {
-			context.addMessage(faceMessage,
+			context.addMessage(READ_FACE_MESSAGE,
 					new FacesMessage(FacesMessage.SEVERITY_FATAL, deleteError, "Invalid user id."));
 			return;
 		}
@@ -83,48 +84,47 @@ public class UserBean {
 		user.setIdUser(idUser);
 		List<UserEntity> entities = dao.findUserById(user);
 		if (entities.isEmpty()) {
-			context.addMessage(faceMessage,
+			context.addMessage(READ_FACE_MESSAGE,
 					new FacesMessage(FacesMessage.SEVERITY_FATAL, deleteError, "User not found."));
 			return;
 		}
 
 		boolean deleted = dao.deleteUser(entities.get(0));
 		if (deleted) {
-			context.addMessage(faceMessage,
+			context.addMessage(READ_FACE_MESSAGE,
 					new FacesMessage(FacesMessage.SEVERITY_INFO, "Delete sucessful", "User was deleted."));
 		} else {
-			context.addMessage(faceMessage,
+			context.addMessage(READ_FACE_MESSAGE,
 					new FacesMessage(FacesMessage.SEVERITY_FATAL, deleteError, "Something went wrong"));
 		}
 	}
 
 	public String findUserById(Integer idUser) {
-		final String faceMessage = "readMessage";
 		final String findError = "Error on find";
-		final String redirect = "read?faces-redirect=true";
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
 		if (idUser == null) {
-			context.addMessage(faceMessage,
+			context.addMessage(READ_FACE_MESSAGE,
 					new FacesMessage(FacesMessage.SEVERITY_FATAL, findError, "Invalid user id."));
-			return redirect;
+		} else {
+			UserEntity user = new UserEntity();
+			user.setIdUser(idUser);
+			List<UserEntity> entities = dao.findUserById(user);
+			if (entities.isEmpty()) {
+				context.addMessage(READ_FACE_MESSAGE,
+						new FacesMessage(FacesMessage.SEVERITY_FATAL, findError, "User not found."));
+			} else {
+				currentUser = entities.get(0);
+			}
 		}
 
-		UserEntity user = new UserEntity();
-		user.setIdUser(idUser);
-		List<UserEntity> entities = dao.findUserById(user);
-		if (entities.isEmpty()) {
-			context.addMessage(faceMessage,
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, findError, "User not found."));
-			return redirect;
-		}
-		currentUser = entities.get(0);
-		return redirect;
+		return REDIRECT;
 	}
 
 	public String cancelUpdate() {
 		clearFields();
-		return "read?faces-redirect=true";
+		return REDIRECT;
 	}
 
 	public String updateUser() {
@@ -132,9 +132,9 @@ public class UserBean {
 		clearFields();
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
-		context.addMessage("readMessage",
+		context.addMessage(READ_FACE_MESSAGE,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Update sucessful", "User was updated."));
-		return "read?faces-redirect=true";
+		return REDIRECT;
 	}
 
 	public List<UserEntity> getUsers() {
