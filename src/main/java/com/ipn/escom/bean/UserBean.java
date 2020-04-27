@@ -1,11 +1,15 @@
 package com.ipn.escom.bean;
 
+import static javax.faces.application.FacesMessage.SEVERITY_FATAL;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -21,6 +25,10 @@ public class UserBean {
 	private static final Logger LOGGER = Logger.getLogger(UserBean.class.getName());
 	private static final String REDIRECT = "read?faces-redirect=true";
 	private static final String READ_FACE_MESSAGE = "readMessage";
+	private static final String CREATE_FACE_MESSAGE = "createMessage";
+	private static final String ERROR_ON_FIND = "Error on find";
+	private static final String ERROR_ON_DELETE = "Error on delete";
+	private static final String ERROR_ON_SAVE = "Error on save";
 	private List<UserEntity> users; // findAll
 	private UserEntity currentUser; // update
 	private String username;
@@ -53,72 +61,56 @@ public class UserBean {
 		LOGGER.log(Level.INFO, "createUser");
 		UserEntity user = new UserEntity();
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
 		user.setUsername(username);
 		users = dao.findUserByUsername(user);
 		if (!users.isEmpty()) {
-			context.addMessage("createMessage",
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error on save", "The username alredy exists"));
+			setMessage(context, CREATE_FACE_MESSAGE, SEVERITY_FATAL, ERROR_ON_SAVE, "The username alredy exists");
 			return;
 		}
 		user.setPassword(password);
 		user = dao.saveUser(user);
 		String message = String.format("User was created with the ID<%d> at %s.", user.getIdUser(),
 				user.getCreatedAt().toString());
-		context.addMessage("createMessage", new FacesMessage(FacesMessage.SEVERITY_INFO, "Save sucessful", message));
+		setMessage(context, CREATE_FACE_MESSAGE, FacesMessage.SEVERITY_INFO, "Save sucessful", message);
 		clearFields();
 	}
 
 	public void deleteUser(Integer idUser) {
-
-		final String deleteError = "Error on delete";
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
 		if (idUser == null) {
-			context.addMessage(READ_FACE_MESSAGE,
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, deleteError, "Invalid user id."));
+			setMessage(context, READ_FACE_MESSAGE, SEVERITY_FATAL, ERROR_ON_DELETE, "Invalid user id.");
 			return;
 		}
-
 		UserEntity user = new UserEntity();
 		user.setIdUser(idUser);
 		List<UserEntity> entities = dao.findUserById(user);
 		if (entities.isEmpty()) {
-			context.addMessage(READ_FACE_MESSAGE,
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, deleteError, "User not found."));
+			setMessage(context, READ_FACE_MESSAGE, SEVERITY_FATAL, ERROR_ON_DELETE, "User not found.");
 			return;
 		}
-
 		boolean deleted = dao.deleteUser(entities.get(0));
 		if (deleted) {
-			context.addMessage(READ_FACE_MESSAGE,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Delete sucessful", "User was deleted."));
+			setMessage(context, READ_FACE_MESSAGE, SEVERITY_INFO, "Delete sucessful", "User was deleted.");
 		} else {
-			context.addMessage(READ_FACE_MESSAGE,
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, deleteError, "Something went wrong"));
+			setMessage(context, READ_FACE_MESSAGE, SEVERITY_FATAL, ERROR_ON_DELETE, "Something went wrong");
 		}
 	}
 
 	public String findUserById(Integer idUser) {
-		final String findError = "Error on find";
 
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
 		if (idUser == null) {
-			context.addMessage(READ_FACE_MESSAGE,
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, findError, "Invalid user id."));
+			setMessage(context, READ_FACE_MESSAGE, SEVERITY_FATAL, ERROR_ON_FIND, "Invalid user id.");
 		} else {
 			UserEntity user = new UserEntity();
 			user.setIdUser(idUser);
 			List<UserEntity> entities = dao.findUserById(user);
 			if (entities.isEmpty()) {
-				context.addMessage(READ_FACE_MESSAGE,
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, findError, "User not found."));
+				setMessage(context, READ_FACE_MESSAGE, SEVERITY_FATAL, ERROR_ON_FIND, "User not found.");
 			} else {
 				currentUser = entities.get(0);
 			}
 		}
-
 		return REDIRECT;
 	}
 
@@ -131,9 +123,7 @@ public class UserBean {
 		dao.updateUser(currentUser);
 		clearFields();
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
-		context.addMessage(READ_FACE_MESSAGE,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Update sucessful", "User was updated."));
+		setMessage(context, READ_FACE_MESSAGE, SEVERITY_INFO, "Update sucessful", "User was updated.");
 		return REDIRECT;
 	}
 
@@ -150,6 +140,11 @@ public class UserBean {
 		username = null;
 		password = null;
 		currentUser = null;
+	}
+
+	private void setMessage(FacesContext context, String clientId, Severity severity, String summary, String detail) {
+		context.getExternalContext().getFlash().setKeepMessages(Boolean.TRUE);
+		context.addMessage(clientId, new FacesMessage(severity, summary, detail));
 	}
 
 }
