@@ -66,7 +66,7 @@ El ciclo de vida de una aplicación se refiere a las diversas etapas de procesam
 *   Modificar y guardar estado
 *   Representación de páginas web en el navegador
 
-El gramework de la aplicación web JavaServer Faces administra las fases del ciclo de vida automáticamente para aplicaciones simples o le permite administrarlas manualmente para aplicaciones más complejas según sea necesario.
+El framework de la aplicación web JavaServer Faces administra las fases del ciclo de vida automáticamente para aplicaciones simples o le permite administrarlas manualmente para aplicaciones más complejas según sea necesario.
 
 Las aplicaciones JavaServer Faces que usan características avanzadas pueden requerir interacción con el ciclo de vida en ciertas fases. Por ejemplo, las aplicaciones Ajax utilizan funciones de procesamiento parcial del ciclo de vida (consulte Procesamiento parcial y renderizado parcial). Una comprensión más clara de las fases del ciclo de vida es clave para crear componentes bien diseñados.
 
@@ -81,8 +81,6 @@ La especificación Managed Beans es parte de la especificación de la plataforma
 ## Facelets
 El término Facelets se refiere al lenguaje de declaración de vista para la tecnología JavaServer Faces. Facelets es parte de la especificación JavaServer Faces y también la tecnología de presentación preferida para crear aplicaciones basadas en la tecnología JavaServer Faces. La tecnología JavaServer Pages (JSP), utilizada anteriormente como tecnología de presentación para JavaServer Faces, no admite todas las nuevas funciones disponibles en JavaServer Faces en la plataforma Java EE 7. La tecnología JSP se considera una tecnología de presentación obsoleta para JavaServer Faces.
 
-
-856/5000
 Facelets es un lenguaje de declaración de página potente pero liviano que se usa para construir vistas de JavaServer Faces usando plantillas de estilo HTML y para construir árboles de componentes. Las características de Facelets incluyen lo siguiente:
 
 * Uso de XHTML para crear páginas web
@@ -307,12 +305,59 @@ Esta regla establece que cuando se activa un componente de comando (como h: comm
 
 
 ## Filtros
+Un filtro (o filter) es un objeto que puede transformar el header y el contenido (o ambos) de un request o response. Los filtros difieren de los componentes web en que los filtros generalmente no crean por sí mismos un response. En cambio, un filtro proporciona una funcionalidad que se puede "adjuntar" a cualquier tipo de recurso web. En consecuencia, un filtro no debe tener dependencias en un recurso web para el que actúa como filtro; De esta manera, se puede componer con más de un tipo de recurso web.
+
+Las tareas principales que puede realizar un filtro son las siguientes:
+
+* Consultar un request y actuar en consecuencia.
+* Bloquear request y response para que no pase más.
+* Modificar los headers y datos de la solicitud. Para ello, debe proporcionar una versión personalizada de la solicitud.
+* Modificar los response headers y datos. Para ello, proporciona un servicio personalizado.
+* Interactuar con recursos externos.
+
+Las aplicaciones de los filters incluyen autenticación, registro, conversión de imágenes, compresión de datos, cifrado, flujos de tokenización, transformaciones XML, etc.
+
+Puede configurar un recurso web para que sea filtrado por una cadena de cero, uno o más filters en un orden específico. Esta cadena se especifica cuando la aplicación web que contiene el componente se implementa y se instancia cuando un contenedor web carga el componente.
+
+
+La API de filtrado está definida por las interfaces *Filter*, *FilterChain* y *FilterConfig* en el paquete *javax.servlet*. Se define implementando la interfaz *Filter*.
+
+Se una la anotación *@WebFilter* para definir un filtro en una aplicación web. Esta anotación se especifica en una clase y contiene metadatos sobre el filtro que se declara. El filtro anotado debe especificar al menos un patrón de URL. Esto se realiza mediante *urlPatterns* o atributo *value* en la anotación. Todos los demás atributos son opcionales, con la configuración predeterminada. Utilice el atributo *value* cuando el único atributo en la anotación es el patrón de URL; use el atributo urlPatterns cuando también se usen otros atributos.
+
+Las clases anotadas con la anotación *@WebFilter* deben implementar la interfaz *javax.servlet.Filter*.
+El método más importante en la interfaz *Filter* es *doFilter*, que pasa los objetos request, response y filter chain objects. Este método puede realizar las siguientes acciones:
+
+* Examinar los request headers
+* Personalizar el request object si el filter desea modificar headers o datos de solicitud.
+* Personalizar el response object si el filter desea modificar los response headers o datos.
+* Invocar el siguiente entity en el filter chain. Si el filter actual es el último filter del chainque termina con el componente web de destino o el recurso estático, el siguiente entity es el recurso al final del chain; de lo contrario, es el siguiente filter que se configuró en WAR. El filter invoca el siguiente entity llamando al método *doFilter* en el objeto del chain, pasando el request y el response con la que se llamó o las versiones envueltas que pudo haber creado. Alternativamente, el filter puede elegir bloquear el request al no hacer la llamada para invocar el siguiente entity.
+* Examinar los headers response después de invocar el siguiente filter en el chain.
+
+Además *doFilter*, debe implementar los métodos *init* y *destroy*. El método llama al método *init* cuando se instancia el filter. Si desea pasar los parámetros de inicialización al filter, los recupera del objeto *FilterConfig* pasado a *init*.
 
 # PrimeFaces
 
+Primefaces es un conjunto de componentes de interfaz de usuario de código abierto para aplicaciones Java Server Faces (JSF).
+
+Construido sobre JSF, Primefaces admite el desarrollo rápido de aplicaciones al proporcionar componentes de interfaz de usuario preconstruidos que se pueden agregar a cualquier proyecto. Además de Primefaces, también está el proyecto Primefaces Extensions. Este proyecto de código abierto basado en la comunidad proporciona componentes adicionales además de los estándar.
+
 # Hibernate
+Hibernate es un framework para Java que viene con una capa de abstracción y maneja las implementaciones internamente. Las implementaciones incluyen tareas como escribir una consulta para operaciones CRUD (Create, Read, Update, Delete) o establecer una conexión con las bases de datos, etc.
+
+Hibernate desarrolla una lógica de persistencia, que almacena y procesa los datos para un uso más prolongado. Es liviano y una herramienta ORM (Object-Relational Mapping), y lo más importante, de código abierto que le da una ventaja sobre otros frameworks.
+
+ORM es una técnica que mapea el objeto almacenado en la base de datos. Una herramienta ORM simplifica la creación, manipulación y acceso de datos. Utiliza internamente la API de Java para interactuar con las bases de datos.
 
 # Maven
+
+Apache Maven es una herramienta de gestión y comprensión de proyectos de software. Basado en el concepto de un modelo de objeto de proyecto (POM), Maven puede administrar la construcción, los informes y la documentación de un proyecto a partir de una información central.
+
+El objetivo principal de Maven es permitir que un desarrollador comprenda el estado completo de un esfuerzo de desarrollo en el menor período de tiempo. Para lograr este objetivo, Maven aborda varias áreas:
+
+* Facilitar el proceso de construcción: Si bien el uso de Maven no elimina la necesidad de conocer los mecanismos subyacentes, Maven protege a los desarrolladores de muchos detalles.
+* Proporcionar un sistema de construcción uniforme: aven construye un proyecto utilizando su modelo de objeto de proyecto (POM) y un conjunto de complementos. Una vez que se familiarice con un proyecto de Maven, sabrá cómo se desarrollan todos los proyectos de Maven. Esto ahorra tiempo al navegar por muchos proyectos.
+* Proporcionar información de calidad sobre el proyecto: Maven proporciona información útil del proyecto que se extrae en parte de su POM y en parte se genera a partir de las fuentes de su proyecto. Por ejemplo, Maven puede proporcionar cambio de registro creado directamente desde el control de origen, fuentes de referencias cruzadas, listas de correo gestionadas por el proyecto, dependencias utilizadas por el proyecto, informes de pruebas unitarias que incluyen cobertura.
+* Fomentar mejores prácticas de desarrollo: Por ejemplo, la especificación, la ejecución y el informe de las pruebas unitarias son parte del ciclo normal de construcción con Maven. Las mejores prácticas de pruebas de unidades actuales se utilizaron como pautas.
 
 # Entorno
 
